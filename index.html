@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Estudio de física cuántica</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{--bg:#f2f4f7;--panel:#fff;--ink:#14181f;--mute:#5d6676;--line:#d9dee6;--acc:#2f5fd0;--field:#eef1f6;--up:#d1495b;--dn:#1d6fa5;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1016;--panel:#161b25;--ink:#e8ecf4;--mute:#98a2b6;--line:#2a3241;--acc:#86aaff;--field:#1d2431;--up:#ff7b8c;--dn:#5fb4ee;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d1016;--panel:#161b25;--ink:#e8ecf4;--mute:#98a2b6;--line:#2a3241;--acc:#86aaff;--field:#1d2431;--up:#ff7b8c;--dn:#5fb4ee;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:1000px;margin:0 auto;padding:16px 16px 48px;display:grid;gap:16px}
+h1{font-size:clamp(1.6rem,4.5vw,2.4rem);letter-spacing:-.02em;line-height:1.1;margin:0 0 4px}
+h2{font-size:1.15rem;margin:0 0 10px}h3{font-size:1rem;margin:16px 0 8px}
+header p{margin:0;color:var(--mute);max-width:62ch}
+nav{display:flex;flex-wrap:wrap;gap:6px;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding:6px 0;z-index:5}
+nav button{font:inherit;font-weight:600;font-size:.92rem;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+nav button.on{background:var(--acc);border-color:var(--acc);color:var(--bg)}
+.tab{display:none;gap:16px}.tab.on{display:grid}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
+.note{color:var(--mute);font-size:.85rem}
+.mono,code,dd,.fx{font-family:ui-monospace,Menlo,Consolas,monospace}
+.cols{display:grid;grid-template-columns:1.2fr 1fr;gap:16px}
+@media(max-width:720px){.cols{grid-template-columns:1fr}}
+.stage{position:relative;background:#080b11;border-radius:14px;overflow:hidden;color:#eaf0fb}
+canvas{display:block;width:100%;height:260px}
+.ro{position:absolute;left:14px;top:10px;right:14px;display:flex;flex-wrap:wrap;gap:2px 20px;align-items:baseline;pointer-events:none}
+.ro h2{margin:0;font-size:1.5rem}.ro span{font-family:ui-monospace,monospace;font-size:.9rem;opacity:.9}
+#play{position:absolute;right:10px;bottom:10px;background:#ffffff1f;color:#fff;border:1px solid #ffffff40;border-radius:8px;padding:5px 12px;font:inherit;font-size:.85rem;cursor:pointer}
+.bw{position:relative;padding:6px 0;touch-action:none;cursor:ew-resize}
+.bar{position:relative;height:52px;border-radius:10px;overflow:hidden}
+.r{position:absolute;top:0;bottom:0;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;color:#06090f;overflow:hidden;white-space:nowrap}
+.mk{position:absolute;top:0;bottom:0;width:3px;background:#fff;box-shadow:0 0 0 1.5px #000;transform:translateX(-50%);pointer-events:none}
+.ticks{position:relative;height:20px}.ticks span{position:absolute;transform:translateX(-50%);font-size:.75rem;color:var(--mute);white-space:nowrap}
+input[type=range]{width:100%;accent-color:var(--acc)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--field);color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font:inherit;font-size:.85rem;cursor:pointer}
+.row{display:grid;grid-template-columns:130px 1fr 96px;gap:8px;align-items:center;margin-bottom:8px}
+.row label{color:var(--mute);font-size:.9rem}
+@media(max-width:720px){.row{grid-template-columns:1fr 96px}.row label{grid-column:1/-1}}
+input[type=text],input[type=number],select{width:100%;background:var(--field);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font:inherit}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:.92rem}dt{color:var(--mute)}dd{margin:0;text-align:right}
+.btn{width:100%;margin-top:10px;padding:10px 16px;border:0;border-radius:9px;background:var(--acc);color:var(--bg);font:inherit;font-weight:600;cursor:pointer}
+.k{display:flex;justify-content:space-between;gap:8px;border-bottom:1px dashed var(--line);padding:4px 0;font-size:.92rem}.k b{font-family:ui-monospace,monospace;text-align:right}
+.msg{color:var(--acc);font-size:.9rem;min-height:1.3em;margin-top:8px;font-weight:600}
+.ban{display:none;margin-top:10px;padding:10px 12px;border:1.5px solid var(--acc);border-radius:10px;background:var(--field);font-size:.92rem}
+.ban button{margin-left:8px;font:inherit;font-size:.85rem;padding:4px 10px;border-radius:8px;border:1px solid var(--acc);background:transparent;color:var(--acc);cursor:pointer}
+.wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.92rem}th,td{text-align:left;padding:6px 12px 6px 0;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--mute);font-weight:600;white-space:nowrap}
+.fx{display:inline-block;border:1.5px solid var(--acc);border-radius:8px;background:var(--field);padding:3px 10px;white-space:nowrap;font-size:.9rem}
+.pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.px{display:flex;align-items:baseline;gap:8px;border:1.5px solid var(--acc);border-radius:8px;background:var(--field);padding:5px 10px}
+.px b{font-family:ui-monospace,monospace;min-width:1.4em}.px span{color:var(--mute);font-size:.85rem;flex:1}.px code{font-size:.88rem;white-space:nowrap}
+.card{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:12px}
+.card h3{margin:0;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}.card h3 small{font-weight:400;font-size:.82rem;color:var(--mute)}
+.orbs{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0}.orb{text-align:center}
+.box{width:62px;height:58px;border:2px solid var(--ink);border-radius:6px;background:var(--field);display:flex;justify-content:center;align-items:center;gap:3px}
+.lab{display:block;font:500 .78rem ui-monospace,monospace;color:var(--mute);margin-top:3px}
+.e{font-size:1.8rem;line-height:1;font-weight:700;animation:pop .4s cubic-bezier(.3,1.6,.5,1) both}.e.u,.chip.u{color:var(--up)}.e.d,.chip.d{color:var(--dn)}
+.chip.u,.chip.d{cursor:default;font:500 .78rem ui-monospace,monospace;padding:2px 8px}
+@keyframes pop{from{opacity:0;transform:translateY(-24px) scale(.3)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.e{animation:none}}
+ul{margin:6px 0;padding-left:20px}li{margin:3px 0}
+.eg{border-left:3px solid var(--acc);padding:6px 12px;background:var(--field);border-radius:0 8px 8px 0;margin:8px 0;font-size:.92rem}
+</style>
+</head>
+<body>
+<main>
+<header><h1>Estudio de física cuántica</h1>
+<p>Espectro electromagnético, modelo de Bohr, números cuánticos y un formulario completo en una sola página. Los saltos de energía del modelo de Bohr se envían al espectro.</p></header>
+<nav id="nav">
+<button data-t="esp" class="on">Espectro</button><button data-t="boh">Modelo de Bohr</button><button data-t="qn">Números cuánticos</button><button data-t="form">Formulario</button></nav>
+
+<!-- ESPECTRO -->
+<section class="tab on" id="esp">
+<div class="stage"><canvas id="wave"></canvas>
+<div class="ro"><h2 id="rn"></h2><span id="rl"></span><span id="rf"></span><span id="re"></span></div>
+<button id="play" type="button">Pausar</button></div>
+<div class="panel">
+<div class="bw" id="bw"><div class="bar" id="bar"></div><div class="mk" id="mk"></div></div>
+<div class="ticks" id="ticks"></div>
+<input type="range" id="sl" min="-4" max="14" step="0.001" value="6.25" aria-label="Posición en el espectro">
+<p class="note" id="fromBohr" style="margin:6px 0 0"></p></div>
+<div class="chips" id="chips"></div>
+<div class="cols">
+<div class="panel"><h2>Calculadora</h2>
+<div class="row"><label for="lv">Longitud de onda λ</label><input type="text" id="lv" inputmode="decimal" autocomplete="off"><select id="lu"></select></div>
+<div class="row"><label for="fv">Frecuencia f</label><input type="text" id="fv" inputmode="decimal" autocomplete="off"><select id="fu"></select></div>
+<div class="row"><label for="tv">Periodo T</label><input type="text" id="tv" inputmode="decimal" autocomplete="off"><select id="tu"></select></div>
+<div class="row"><label for="ev">Energía del fotón E</label><input type="text" id="ev" inputmode="decimal" autocomplete="off"><select id="eu"></select></div>
+<div class="row"><label for="nt">Notación mostrada</label><select id="nt" style="grid-column:span 2"><option value="auto">Automática</option><option value="dec">Decimal</option><option value="sci">Científica (2e-8 = 2 × 10⁻⁸)</option></select></div>
+<p class="note">Escribe en cualquier campo y los otros tres se recalculan. Los menús de unidades solo convierten el valor mostrado (20 nm → 2e-8 m); no mueven el espectro. <button type="button" id="unl" class="chip">Unidades automáticas</button></p><dl id="der"></dl></div>
+<div class="panel"><h2>Fotones por segundo</h2>
+<div class="row"><label for="pv">Potencia</label><input type="text" id="pv" inputmode="decimal" value="1"><select id="pu"><option value="1e-3">mW</option><option value="1" selected>W</option><option value="1e3">kW</option></select></div>
+<dl id="ph"></dl><div id="info" style="margin-top:14px"></div></div>
+</div>
+<div class="panel"><h2>Sustitución con los valores actuales</h2><div class="wrap"><table><thead><tr><th>Magnitud</th><th>Fórmula</th><th>Sustitución</th></tr></thead><tbody id="fmt"></tbody></table></div></div>
+</section>
+
+<!-- BOHR -->
+<section class="tab" id="boh">
+<div class="panel"><canvas id="cv" style="height:320px;background:var(--field);border-radius:10px"></canvas></div>
+<div class="cols">
+<div class="panel"><h2>1) Energía de un nivel</h2>
+<div class="row" style="grid-template-columns:1fr 1fr"><div><label for="Z">Número atómico Z (1–20)</label><input id="Z" type="number" min="1" max="20" value="1"></div><div><label for="n">Nivel n</label><input id="n" type="number" min="1" max="100" value="1"></div></div>
+<div id="r1" style="margin-top:10px"></div></div>
+<div class="panel"><h2>2) Salto entre niveles</h2>
+<div class="row" style="grid-template-columns:1fr 1fr"><div><label for="ni">Nivel inicial nᵢ</label><input id="ni" type="number" min="1" max="100" value="3"></div><div><label for="nf">Nivel final n_f</label><input id="nf" type="number" min="1" max="100" value="2"></div></div>
+<button class="btn" id="go">▶ Animar salto</button><div class="msg" id="msg"></div>
+<div class="ban" id="ban"></div><div id="r2" style="margin-top:10px"></div></div>
+</div>
+</section>
+
+<!-- NÚMEROS CUÁNTICOS -->
+<section class="tab" id="qn">
+<div class="panel"><h2>Números cuánticos n, l, mₗ, mₛ</h2>
+<p class="note">Escribe n (1 a 7): verás los valores permitidos y el llenado de orbitales (regla de Hund: primero ↑ en cada orbital, luego ↓).</p>
+<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end"><div><label for="qn_n" class="note">Principal (n)</label><input id="qn_n" type="number" min="1" max="7" value="3" style="width:100px"></div><button class="btn" id="qgo" style="width:auto;margin:0">Generar</button></div>
+<div class="note" id="qerr" role="alert" style="color:var(--up);min-height:1.3em"></div>
+<h3 id="qt"></h3><div class="wrap"><table id="qtbl"></table></div>
+<p class="note"><b style="color:var(--up)">↑</b> mₛ = +½ · <b style="color:var(--dn)">↓</b> mₛ = −½</p>
+<div id="subs"></div></div>
+</section>
+
+<!-- FORMULARIO -->
+<section class="tab" id="form">
+<div class="panel"><h2>Reglas de los números cuánticos</h2>
+<div class="wrap"><table><thead><tr><th>Símbolo</th><th>Nombre</th><th>Valores permitidos</th><th>Describe</th></tr></thead><tbody>
+<tr><td class="mono">n</td><td>Principal</td><td class="mono">1, 2, 3, …</td><td>Nivel de energía y tamaño del orbital</td></tr>
+<tr><td class="mono">l</td><td>Azimutal (secundario)</td><td class="mono">0 hasta n − 1</td><td>Forma del orbital (subnivel)</td></tr>
+<tr><td class="mono">mₗ</td><td>Magnético</td><td class="mono">−l, …, 0, …, +l (2l + 1 valores)</td><td>Orientación del orbital</td></tr>
+<tr><td class="mono">mₛ</td><td>De espín</td><td class="mono">+½ o −½</td><td>Giro del electrón</td></tr></tbody></table></div>
+<h3>Notación espectroscópica</h3>
+<div class="wrap"><table><thead><tr><th>l</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th></tr></thead><tbody><tr><td>Letra</td><td>s</td><td>p</td><td>d</td><td>f</td><td>g</td></tr><tr><td>Orbitales (2l + 1)</td><td>1</td><td>3</td><td>5</td><td>7</td><td>9</td></tr><tr><td>Electrones máx. (2·(2l + 1))</td><td>2</td><td>6</td><td>10</td><td>14</td><td>18</td></tr></tbody></table></div>
+<h3>Reglas de llenado</h3>
+<ul><li><b>Capacidad:</b> un nivel n tiene n subniveles, n² orbitales y 2n² electrones como máximo.</li>
+<li><b>Principio de exclusión de Pauli:</b> dos electrones del mismo átomo no pueden tener los cuatro números cuánticos iguales; en un orbital solo caben dos, con espines opuestos.</li>
+<li><b>Principio de Aufbau:</b> se llenan primero los subniveles de menor energía (orden de n + l; si empatan, menor n): 1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p 6s 4f 5d 6p 7s 5f 6d 7p.</li>
+<li><b>Regla de Hund:</b> en subniveles con varios orbitales de igual energía, primero se coloca un electrón en cada orbital (todos con el mismo espín) y después se aparean.</li>
+<li><b>Notación de un electrón:</b> (n, l, mₗ, mₛ). Ejemplo: el último electrón del 3p¹ puede ser (3, 1, −1, +½).</li></ul>
+
+<h2 style="margin-top:22px">Cómo calcular la energía de un nivel n</h2>
+<div class="eg"><span class="fx">Eₙ = −(13,6057 eV) · Z² / n²</span> &nbsp; equivale a <span class="fx">Eₙ = −2,17987×10⁻¹⁸ J · Z² / n²</span></div>
+<ul><li>Z es el número atómico (átomo con un solo electrón: H, He⁺, Li²⁺…). Para el hidrógeno, Z = 1.</li><li>La energía es negativa: el electrón está ligado. En n → ∞ vale 0 (ionización).</li><li>Radio de la órbita: <span class="fx">rₙ = a₀ · n² / Z</span>, con a₀ = 5,29177×10⁻¹¹ m.</li></ul>
+<div class="eg"><b>Ejemplo (H, n = 3):</b> E₃ = −13,6057 / 3² = −1,512 eV = −2,422×10⁻¹⁹ J.</div>
+
+<h2 style="margin-top:22px">Cómo calcular un salto entre niveles</h2>
+<ol><li><span class="fx">ΔE = E_f − Eᵢ = −13,6057 · Z² · (1/n_f² − 1/nᵢ²) eV</span></li>
+<li>Si ΔE &lt; 0 (n_f &lt; nᵢ) el átomo <b>emite</b> un fotón; si ΔE &gt; 0 lo <b>absorbe</b>.</li>
+<li>Energía del fotón: <span class="fx">E = |ΔE|</span> (pasar eV → J multiplicando por 1,602×10⁻¹⁹).</li>
+<li>Frecuencia: <span class="fx">f = E / h</span> · Periodo: <span class="fx">T = 1 / f</span> · Longitud de onda: <span class="fx">λ = c / f = h·c / E</span></li>
+<li>Atajo de Rydberg: <span class="fx">1/λ = R∞ · Z² · (1/n_f² − 1/nᵢ²)</span>, con R∞ = 1,0973731×10⁷ m⁻¹ (valor absoluto).</li></ol>
+<div class="eg"><b>Ejemplo (H, 3 → 2):</b> ΔE = −13,6057·(1/4 − 1/9) = −1,890 eV → emisión.<br>E = 1,890 eV = 3,028×10⁻¹⁹ J · f = 3,028×10⁻¹⁹ / 6,626×10⁻³⁴ = 4,57×10¹⁴ Hz<br>T = 1/f = 2,19×10⁻¹⁵ s · λ = c/f = 656 nm (rojo, serie de Balmer).</div>
+<h3>Series espectrales del hidrógeno (n_f fijo)</h3>
+<p class="note">Lyman (n_f = 1, UV) · Balmer (2, visible) · Paschen (3, IR) · Brackett (4, IR) · Pfund (5, IR) · Humphreys (6, IR).</p>
+
+<h2 style="margin-top:22px">Relaciones entre λ, f, T y E</h2>
+<dl style="grid-template-columns:auto 1fr;gap:10px 14px"><dt>Longitud de onda λ</dt><dd class="fx" style="justify-self:start">λ = c / f = c · T = h · c / E</dd><dt>Frecuencia f</dt><dd class="fx" style="justify-self:start">f = c / λ = 1 / T = E / h</dd><dt>Periodo T</dt><dd class="fx" style="justify-self:start">T = λ / c = 1 / f = h / E</dd><dt>Energía E</dt><dd class="fx" style="justify-self:start">E = h · f = h / T = h · c / λ</dd><dt>Número de onda</dt><dd class="fx" style="justify-self:start">ν̃ = 1 / λ</dd><dt>Momento del fotón</dt><dd class="fx" style="justify-self:start">p = h / λ</dd><dt>Energía molar</dt><dd class="fx" style="justify-self:start">E<sub>molar</sub> = E · N<sub>A</sub></dd><dt>Fotones por segundo</dt><dd class="fx" style="justify-self:start">N = P / E</dd><dt>Ley de Wien</dt><dd class="fx" style="justify-self:start">T = b / λ, b = 2,898×10⁻³ m·K</dd></dl>
+
+<h2 style="margin-top:22px">Constantes y conversiones</h2>
+<div class="wrap"><table><thead><tr><th>Constante</th><th>Símbolo</th><th>Valor</th></tr></thead><tbody>
+<tr><td>Constante de Planck</td><td class="mono">h</td><td class="mono">6,62607015 × 10⁻³⁴ J·s</td></tr>
+<tr><td>Velocidad de la luz</td><td class="mono">c</td><td class="mono">2,99792458 × 10⁸ m/s</td></tr>
+<tr><td>Electronvoltio</td><td class="mono">eV</td><td class="mono">1 eV = 1,602176634 × 10⁻¹⁹ J</td></tr>
+<tr><td>Joule en eV</td><td class="mono">J</td><td class="mono">1 J = 6,241509 × 10¹⁸ eV</td></tr>
+<tr><td>Energía de Rydberg</td><td class="mono">R_E</td><td class="mono">2,17987 × 10⁻¹⁸ J = 13,6057 eV</td></tr>
+<tr><td>Constante de Rydberg</td><td class="mono">R∞</td><td class="mono">1,0973731 × 10⁷ m⁻¹</td></tr>
+<tr><td>Radio de Bohr</td><td class="mono">a₀</td><td class="mono">5,29177 × 10⁻¹¹ m</td></tr>
+<tr><td>Número de Avogadro</td><td class="mono">N<sub>A</sub></td><td class="mono">6,02214076 × 10²³ mol⁻¹</td></tr>
+<tr><td>Constante de Wien</td><td class="mono">b</td><td class="mono">2,897771955 × 10⁻³ m·K</td></tr>
+<tr><td>Producto h·c</td><td class="mono">hc</td><td class="mono">1239,84 eV·nm (λ[nm] = 1239,84 / E[eV])</td></tr></tbody></table></div>
+<h3>Conversiones útiles</h3>
+<p class="note">1 m = 10⁹ nm = 10¹² pm = 10¹⁰ Å · 1 nm = 10⁻⁹ m · 1 Å = 10⁻¹⁰ m · 1 Hz = 1 s⁻¹ · 1 kJ/mol = 1000 J/mol.</p>
+<h3>Prefijos y notación científica</h3>
+<p class="note">5 GHz = 5 × 10⁹ Hz · 550 nm = 550 × 10⁻⁹ m = 5,5 × 10⁻⁷ m. Para pasar a notación científica, mueve el punto decimal hasta dejar una cifra entera: cada lugar a la izquierda suma 1 al exponente; a la derecha, lo resta.</p>
+<div class="pg" id="pfx"></div>
+</div>
+</section>
+</main>
+
+<script>
+const c=299792458,h=6.62607015e-34,eV=1.602176634e-19,NA=6.02214076e23,wien=2.897771955e-3,E0=13.605693,A0=5.29177e-11;
+const $=id=>document.getElementById(id);
+// ---------- pestañas ----------
+function showTab(id){document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('on',s.id===id));document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===id));sizeAll();scrollTo(0,0)}
+$('nav').addEventListener('click',e=>{const b=e.target.closest('button');if(b)showTab(b.dataset.t)});
+// prefijos
+$('pfx').innerHTML=[['k','kilo',3],['M','mega',6],['G','giga',9],['T','tera',12],['P','peta',15],['E','exa',18],['Z','zetta',21],['c','centi',-2],['m','mili',-3],['µ','micro',-6],['n','nano',-9],['p','pico',-12],['f','femto',-15],['a','atto',-18],['z','zepto',-21],['y','yocto',-24]].map(([s,n,e])=>`<div class="px"><b>${s}</b><span>${n}</span><code>1 × 10${String(e).replace(/./g,ch=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[ch]||'⁻')}</code></div>`).join('');
+
+// ---------- ESPECTRO ----------
+const SMIN=-4,SMAX=14,SPAN=18,clamp=s=>Math.min(SMAX,Math.max(SMIN,s));
+function wl2rgb(w){let r=0,g=0,b=0;
+if(w>=380&&w<440){r=-(w-440)/60;b=1}else if(w<490){g=(w-440)/50;b=1}else if(w<510){g=1;b=-(w-510)/20}else if(w<580){r=(w-510)/70;g=1}else if(w<645){r=1;g=-(w-645)/65}else if(w<=750){r=1}
+const f=w<420?.3+.7*(w-380)/40:w>700?.3+.7*(750-w)/50:1;const q=v=>Math.round(255*Math.pow(Math.max(0,v)*f,.8));return`rgb(${q(r)},${q(g)},${q(b)})`}
+const rbow=(()=>{const s=[];for(let w=380;w<=750;w+=10)s.push(wl2rgb(w)+' '+((w-380)/370*100).toFixed(1)+'%');return`linear-gradient(90deg,${s.join(',')})`})();
+const R=[
+{id:'radio',n:'Ondas de radio',a:-4,b:1,col:'#6c8cff',s:'Radio AM/FM, TV, GPS',r:'λ mayor a 10 cm',d:'Transportan radio, TV, navegación y comunicación con satélites. Atraviesan paredes y la atmósfera con facilidad.'},
+{id:'micro',n:'Microondas',a:1,b:3,col:'#35c4a0',s:'Wi-Fi, hornos, radar',r:'λ de 1 mm a 10 cm',d:'Calientan el agua de los alimentos y llevan Wi-Fi y telefonía móvil. El fondo cósmico de microondas es el eco del Big Bang.'},
+{id:'ir',n:'Infrarrojo',a:3,b:6.1249,col:'#e5534b',s:'Calor, mandos, fibra óptica',r:'λ de 750 nm a 1 mm',d:'Es el calor radiante: todo cuerpo tibio lo emite. Lo usan las cámaras térmicas y la fibra óptica.'},
+{id:'vis',n:'Luz visible',a:6.1249,b:6.4202,col:'#fff',s:'Sol, lámparas, pantallas',r:'λ de 380 a 750 nm',d:'La única franja que ve el ojo humano. Del violeta (380 nm) al rojo (750 nm).'},
+{id:'uv',n:'Ultravioleta',a:6.4202,b:8,col:'#a46bff',s:'Sol, lámparas germicidas',r:'λ de 10 a 380 nm',d:'Produce vitamina D y quemaduras, y esteriliza superficies. La capa de ozono absorbe casi todo el UV dañino.'},
+{id:'x',n:'Rayos X',a:8,b:11,col:'#5fd0ff',s:'Radiografías',r:'λ de 10 pm a 10 nm',d:'Atraviesan tejidos blandos pero no huesos. Los emiten gas muy caliente, agujeros negros y estrellas de neutrones.'},
+{id:'g',n:'Rayos gamma',a:11,b:14,col:'#ff5fae',s:'Núcleos, supernovas, radioterapia',r:'λ menor a 10 pm',d:'Los fotones más energéticos. Nacen en núcleos atómicos y explosiones estelares.'}];
+R.forEach(g=>{const e=document.createElement('div');e.className='r';e.style.left=((g.a-SMIN)/SPAN*100)+'%';e.style.width=((g.b-g.a)/SPAN*100)+'%';e.style.background=g.id==='vis'?rbow:g.col;e.title=g.n;if(g.id!=='vis')e.textContent=g.n.replace('Ondas de radio','Radio').replace('Rayos ','');$('bar').appendChild(e)});
+[[-3,'1 km'],[0,'1 m'],[3,'1 mm'],[6,'1 µm'],[9,'1 nm'],[12,'1 pm']].forEach(([s,t])=>{const e=document.createElement('span');e.style.left=((s-SMIN)/SPAN*100)+'%';e.textContent=t;$('ticks').appendChild(e)});
+const U={l:[['pm',1e-12],['nm',1e-9],['µm',1e-6],['mm',1e-3],['cm',1e-2],['m',1],['km',1e3]],
+t:[['ys',1e-24],['zs',1e-21],['as',1e-18],['fs',1e-15],['ps',1e-12],['ns',1e-9],['µs',1e-6],['ms',1e-3],['s',1]],
+f:[['Hz',1],['kHz',1e3],['MHz',1e6],['GHz',1e9],['THz',1e12],['PHz',1e15],['EHz',1e18],['ZHz',1e21]],
+e:[['neV',1e-9*eV],['µeV',1e-6*eV],['meV',1e-3*eV],['eV',eV],['keV',1e3*eV],['MeV',1e6*eV],['GeV',1e9*eV],['J',1,1]]};
+Object.keys(U).forEach(k=>{$(k+'u').innerHTML=U[k].map((u,i)=>`<option value="${i}">${u[0]}</option>`).join('')});
+const unit=k=>U[k][+$(k+'u').value];
+function pick(k,x){let b=null;for(const u of U[k]){if(u[2])continue;if(x>=u[1]*.9999999&&(!b||u[1]>b[1]))b=u}return b||U[k].filter(u=>!u[2]).sort((a,b)=>a[1]-b[1])[0]}
+const fmtN=(x,d=6)=>{if(!isFinite(x))return'—';if(x===0)return'0';const a=Math.abs(x);return a>=1e-3&&a<1e7?String(+x.toPrecision(d)):x.toExponential(d-2)};
+const SUP={'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','-':'⁻'};
+function sci(x,d=3){if(!isFinite(x)||x===0)return'0';const a=Math.abs(x);if(a>=.01&&a<1e5)return x.toLocaleString('es-MX',{maximumSignificantDigits:4});const[m,e]=x.toExponential(d-1).split('e');return(+m).toString().replace('.',',')+' × 10'+String(+e).split('').map(ch=>SUP[ch]).join('')}
+const withUnit=(k,x)=>{const u=pick(k,x);return fmtN(x/u[1],4).replace('.',',')+' '+u[0]};
+let lam=5.5e-7,regId='',tw=0;
+const regionOf=s=>R.find(g=>s>=g.a&&s<g.b)||(s<SMIN?R[0]:R[R.length-1]);
+function update(src){
+const s=-Math.log10(lam),sc=clamp(s),g=regionOf(sc),f=c/lam,E=h*f;
+const vals={l:lam,t:1/f,f:f,e:E};
+['l','t','f','e'].forEach(k=>{if(k===src)return;const sel=$(k+'u'),u=sel.dataset.lock?U[k][+sel.value]:pick(k,vals[k]);sel.value=U[k].indexOf(u);sel.dataset.p=sel.value;$(k+'v').value=fmtField(vals[k]/u[1])});
+$('sl').value=sc;$('mk').style.left=((sc-SMIN)/SPAN*100)+'%';
+$('rn').textContent=g.n;$('rl').textContent='λ = '+withUnit('l',lam);$('rf').textContent='f = '+withUnit('f',f);$('re').textContent='E = '+withUnit('e',E);
+const T=1/f;
+$('fmt').innerHTML=[['Frecuencia','f = c / λ',`${sci(c,4)} / ${sci(lam,4)} = ${sci(f,4)} Hz`],['Periodo','T = 1 / f',`1 / ${sci(f,4)} = ${sci(T,4)} s`],['Energía','E = h · f',`${sci(h,4)} · ${sci(f,4)} = ${sci(E,4)} J = ${sci(E/eV,4)} eV`],['Longitud de onda','λ = h · c / E',`${sci(h,4)} · ${sci(c,4)} / ${sci(E,4)} = ${sci(lam,4)} m`]].map(r=>`<tr><td>${r[0]}</td><td><span class="fx">${r[1]}</span></td><td class="mono">${r[2]}</td></tr>`).join('');
+$('der').innerHTML=[['Número de onda',sci(1/(lam*100))+' cm⁻¹'],['Energía',sci(E)+' J'],['Energía molar',sci(E*NA/1000)+' kJ/mol'],['Momento p = h/λ',sci(h/lam)+' kg·m/s'],['Temperatura de Wien',sci(wien/lam)+' K']].map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join('');
+photons();
+if(g.id!==regId){regId=g.id;$('info').innerHTML=`<h3 style="margin:0">${g.n}</h3><p style="margin:4px 0">${g.d}</p><p class="note" style="margin:0">${g.r}. Ejemplos: ${g.s}.</p>`}}
+function photons(){const P=parseFloat($('pv').value.replace(',','.'))*+$('pu').value,E=h*c/lam;$('ph').innerHTML=isFinite(P)&&P>0?`<dt>Fotones por segundo</dt><dd>${sci(P/E)}</dd><dt>Energía por fotón</dt><dd>${sci(E)} J</dd>`:'<dt>Escribe una potencia mayor que 0</dt><dd></dd>'}
+$('pv').addEventListener('input',photons);$('pu').addEventListener('change',photons);
+function fromField(k){const v=parseFloat($(k+'v').value.replace(',','.'));if(!(v>0)||!isFinite(v))return;const x=v*unit(k)[1];lam=k==='l'?x:k==='f'?c/x:k==='t'?c*x:h*c/x;cancelAnimationFrame(tw);$('fromBohr').textContent='';update(k)}
+function fmtField(x){const m=$('nt').value;if(!isFinite(x))return'—';if(x===0)return'0';if(m==='sci')return x.toExponential(5).replace(/\.?0+e/,'e');if(m==='dec')return Number(x.toPrecision(6)).toLocaleString('fullwide',{useGrouping:false,maximumFractionDigits:30}).replace('.',',');return fmtN(x,6)}
+function physVals(){const f=c/lam;return{l:lam,t:1/f,f:f,e:h*f}}
+/* El menú de unidades solo convierte el valor mostrado: no cambia λ ni el espectro */
+['l','t','f','e'].forEach(k=>{$(k+'u').dataset.p=$(k+'u').value;$(k+'v').addEventListener('input',()=>fromField(k));$(k+'u').addEventListener('change',()=>{const sel=$(k+'u');sel.dataset.lock='1';sel.dataset.p=sel.value;$(k+'v').value=fmtField(physVals()[k]/unit(k)[1])})});
+$('nt').addEventListener('change',()=>['l','t','f','e'].forEach(k=>{$(k+'v').value=fmtField(physVals()[k]/unit(k)[1])}));
+$('unl').onclick=()=>{['l','t','f','e'].forEach(k=>delete $(k+'u').dataset.lock);update(null)};
+function setS(s){cancelAnimationFrame(tw);lam=Math.pow(10,-s);$('fromBohr').textContent='';update(null)}
+$('sl').addEventListener('input',e=>setS(+e.target.value));
+const bw=$('bw');function mv(e){const r=bw.getBoundingClientRect();setS(SMIN+Math.min(1,Math.max(0,(e.clientX-r.left)/r.width))*SPAN)}
+bw.addEventListener('pointerdown',e=>{bw.setPointerCapture(e.pointerId);mv(e)});bw.addEventListener('pointermove',e=>{if(e.buttons)mv(e)});
+function goTo(target){cancelAnimationFrame(tw);const s0=-Math.log10(lam),t0=performance.now();const step=now=>{const p=Math.min(1,(now-t0)/700),e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;lam=Math.pow(10,-(s0+(target-s0)*e));update(null);if(p<1)tw=requestAnimationFrame(step)};tw=requestAnimationFrame(step)}
+[['Radio FM',3],['Wi-Fi 2,4 GHz',.1249],['Infrarrojo',1e-5],['Luz roja',6.5e-7],['Luz verde',5.5e-7],['Luz violeta',4e-7],['Ultravioleta',2.5e-7],['Rayos X',1e-10],['Rayos gamma',1e-12]].forEach(([t,l])=>{const b=document.createElement('button');b.type='button';b.className='chip';b.textContent=t+' ('+withUnit('l',l)+')';b.onclick=()=>{$('fromBohr').textContent='';goTo(-Math.log10(l))};$('chips').appendChild(b)});
+// llamada desde Bohr: coloca λ del fotón en el espectro
+function sendToSpectrum(l,label){cancelAnimationFrame(tw);lam=l;update(null);$('fromBohr').textContent='⚛ '+label}
+const cv0=$('wave'),cx0=cv0.getContext('2d');let W0=0,H0=0,t=0,last=performance.now(),playing=!matchMedia('(prefers-reduced-motion: reduce)').matches;
+$('play').textContent=playing?'Pausar':'Reanudar';$('play').onclick=()=>{playing=!playing;$('play').textContent=playing?'Pausar':'Reanudar'};
+function drawWave(){if(!W0)return;const sc=clamp(-Math.log10(lam)),u=(sc-SMIN)/SPAN,g=regionOf(sc),col=g.id==='vis'?wl2rgb(lam*1e9):g.col,lp=W0/(2.5+u*38),cy=H0*.64,A=H0*.2;
+cx0.clearRect(0,0,W0,H0);cx0.strokeStyle='rgba(255,255,255,.12)';cx0.lineWidth=1;cx0.beginPath();cx0.moveTo(0,cy);cx0.lineTo(W0,cy);cx0.stroke();
+cx0.strokeStyle=col;cx0.shadowColor=col;cx0.shadowBlur=4+u*22;cx0.lineWidth=2+u*1.5;cx0.beginPath();
+for(let x=0;x<=W0;x+=2){const y=cy-A*Math.sin(2*Math.PI*(x-150*t)/lp);x?cx0.lineTo(x,y):cx0.moveTo(x,y)}cx0.stroke();cx0.shadowBlur=0}
+
+// ---------- BOHR ----------
+const line=(a,b)=>`<div class="k"><span>${a}</span><b>${b}</b></div>`;
+const En=(n,Z)=>-E0*Z*Z/(n*n),cl=(v,lo,hi)=>Math.min(hi,Math.max(lo,Math.round(+v)||lo));
+const rd=()=>({Z:cl($('Z').value,1,20),n:cl($('n').value,1,100),ni:cl($('ni').value,1,100),nf:cl($('nf').value,1,100)});
+const serie=n=>({1:'Lyman',2:'Balmer',3:'Paschen',4:'Brackett',5:'Pfund',6:'Humphreys'}[n]||'—');
+const nm_=x=>Number(x.toPrecision(5)).toString().replace('.',',');
+let state={cur:1,ang:0,t:null,from:1,to:1,ph:null};
+function calc1(){const{Z,n}=rd(),e=En(n,Z);$('r1').innerHTML=line('Eₙ (eV)',nm_(e)+' eV')+line('Eₙ (J)',sci(e*eV)+' J')+line('Radio rₙ',sci(A0*n*n/Z)+' m')+line('Energía de ionización desde n',nm_(-e)+' eV');state.cur=Math.min(n,8)}
+function calc2(){const{Z,ni,nf}=rd();
+if(ni===nf){$('msg').textContent='Elige niveles distintos para que haya un salto.';$('r2').innerHTML='';return null}
+$('msg').textContent='';
+const Ei=En(ni,Z),Ef=En(nf,Z),dE=Ef-Ei,emis=dE<0,Ep=Math.abs(dE),Ej=Ep*eV,f=Ej/h,l=c/f,nm=l*1e9;
+const reg=nm<380?'UV':nm>750?'IR':'Visible',col=nm>=380&&nm<=750?wl2rgb(nm):nm<380?'#a78bfa':'#f87171';
+$('r2').innerHTML=line('Eᵢ',nm_(Ei)+' eV')+line('E_f',nm_(Ef)+' eV')+line('ΔE',nm_(dE)+' eV = '+sci(dE*eV)+' J')+line('Proceso',emis?'Emisión de un fotón':'Absorción de un fotón')+line('E fotón',nm_(Ep)+' eV = '+sci(Ej)+' J')+line('Frecuencia f',sci(f)+' Hz')+line('Periodo T',sci(1/f)+' s')+line('Longitud de onda λ',(nm>=1e4||nm<.01?sci(l)+' m':nm_(nm)+' nm')+' ('+reg+')')+(Z===1?line('Serie',serie(emis?nf:ni)):'');
+return{emis,col,ni,nf,nm,l,f}}
+const cv=$('cv'),ctx=cv.getContext('2d');let W=0,Hh=0;
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const rad=n=>{const m=Math.min(Hh/2-14,W/2-14);return 22+(m-22)*(Math.min(n,8)-1)/7};
+function drawBohr(ts){if(!W)return;const cx=W/2,cy=Hh/2;ctx.clearRect(0,0,W,Hh);ctx.font='11px system-ui';ctx.textAlign='center';
+for(let k=1;k<=8;k++){ctx.beginPath();ctx.arc(cx,cy,rad(k),0,7);ctx.strokeStyle=css('--mute');ctx.globalAlpha=.5;ctx.lineWidth=1;ctx.setLineDash([3,4]);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=1;ctx.fillStyle=css('--mute');ctx.fillText(k===8?'n≥8':'n='+k,cx+rad(k)*.707+10,cy-rad(k)*.707-2)}
+ctx.beginPath();ctx.arc(cx,cy,9,0,7);ctx.fillStyle='#e11d48';ctx.fill();
+let r;if(state.t!==null){const p=Math.min(1,(ts-state.t)/1400),e=p*p*(3-2*p);r=rad(state.from)+(rad(state.to)-rad(state.from))*e;if(p>=1){state.t=null;state.cur=Math.min(state.to,8)}}else r=rad(state.cur);
+state.ang+=.025/Math.max(1,r/60);
+ctx.beginPath();ctx.arc(cx+r*Math.cos(state.ang),cy+r*Math.sin(state.ang),6,0,7);ctx.fillStyle='#2563eb';ctx.fill();
+if(state.ph){const P=state.ph,p=(ts-P.t0)/1800;if(p>1)state.ph=null;else if(p>=0){const dir=P.emis?1:-1,Rr=Math.max(W,Hh)*.6,d=P.emis?40+p*Rr*.75:Rr*.75*(1-p)+40,a=P.a,sx=cx+Math.cos(a)*d,sy=cy+Math.sin(a)*d;
+ctx.beginPath();for(let i=0;i<=60;i++){const u=i/60*70-35,w=Math.sin(u*.55-ts*.02*dir)*7*(1-Math.abs(u)/40),x=sx+Math.cos(a)*u-Math.sin(a)*w,y=sy+Math.sin(a)*u+Math.cos(a)*w;i?ctx.lineTo(x,y):ctx.moveTo(x,y)}
+ctx.strokeStyle=P.col;ctx.lineWidth=3;ctx.stroke();ctx.fillStyle=P.col;ctx.fillText('γ '+P.nm.toFixed(1)+' nm',sx,sy-16)}}}
+$('go').onclick=()=>{const k=calc2();if(!k)return;state.from=k.ni;state.to=k.nf;state.cur=Math.min(k.ni,8);state.t=null;
+setTimeout(()=>{const t0=performance.now();state.t=t0;state.ph={t0:k.emis?t0+700:t0-1000,emis:k.emis,col:k.col,nm:k.nm,a:-.6+Math.random()*.3}},350);
+const lab=`${k.emis?'Fotón emitido':'Fotón absorbido'} en el salto ${k.ni} → ${k.nf}: λ = ${withUnit('l',k.l)}`;
+sendToSpectrum(k.l,lab);
+$('ban').style.display='block';$('ban').innerHTML=`${lab}. Ya está colocada en el espectro. <button type="button" id="seeSp">Ver espectro</button>`;$('seeSp').onclick=()=>showTab('esp')};
+['Z','n'].forEach(i=>$(i).oninput=calc1);
+['ni','nf','Z'].forEach(i=>$(i).addEventListener('input',()=>{calc2();state.cur=Math.min(rd().ni,8)}));
+
+// ---------- NÚMEROS CUÁNTICOS ----------
+const LET=['s','p','d','f','g','h','i'],fm=v=>v>0?'+'+v:v<0?'−'+Math.abs(v):'0',sp=s=>s>0?'+½':'−½';let timers=[],lastN=3;
+function build(n){timers.forEach(clearTimeout);timers=[];lastN=n;
+$('qt').textContent=`Para n = ${n}: l = 0 hasta ${n-1} (${n*n} orbitales, ${2*n*n} electrones)`;
+let rows='<tr><th>l</th><th>Subnivel</th><th>mₗ permitidos (−l … +l)</th><th>mₛ</th></tr>';
+for(let l=0;l<n;l++){const ml=[];for(let m=-l;m<=l;m++)ml.push(fm(m));rows+=`<tr><td class="mono">${l}</td><td class="mono">${n}${LET[l]}</td><td class="mono">${ml.join(', ')}</td><td class="mono">+½, −½</td></tr>`}
+$('qtbl').innerHTML=rows;const subs=$('subs');subs.innerHTML='';const q=[];
+for(let l=0;l<n;l++){const k=2*l+1,d=document.createElement('div');d.className='card';let o='';
+for(let i=0;i<k;i++)o+=`<div class="orb"><div class="box" id="b${l}_${i}"></div><span class="lab">mₗ = ${fm(i-l)}</span></div>`;
+d.innerHTML=`<h3>Subnivel ${n}${LET[l]} <small>l = ${l} · ${k} orbital${k>1?'es':''} · ${2*k} electrones</small></h3><div class="orbs">${o}</div><div class="chips" id="c${l}"></div>`;subs.appendChild(d);
+for(let j=0;j<2*k;j++){const oi=j%k;q.push({l,o:oi,ml:oi-l,s:j<k?.5:-.5})}}
+const step=Math.min(220,7000/q.length);
+q.forEach((e,i)=>timers.push(setTimeout(()=>{const cls=e.s>0?'u':'d',s=document.createElement('span');s.className='e '+cls;s.textContent=e.s>0?'↑':'↓';
+s.title=`(n=${n}, l=${e.l}, mₗ=${fm(e.ml)}, mₛ=${sp(e.s)})`;$(`b${e.l}_${e.o}`).appendChild(s);
+const ch=document.createElement('span');ch.className='chip '+cls;ch.textContent=`(${n}, ${e.l}, ${fm(e.ml)}, ${sp(e.s)})`;$('c'+e.l).appendChild(ch)},i*step)))}
+function qrun(){const n=Number($('qn_n').value);if(!Number.isInteger(n)||n<1||n>7){$('qerr').textContent='Escribe un entero de 1 a 7 para n.';return}$('qerr').textContent='';build(n)}
+$('qgo').onclick=qrun;$('qn_n').addEventListener('keydown',e=>{if(e.key==='Enter')qrun()});
+
+// ---------- tamaños y bucle ----------
+function sizeAll(){const d=devicePixelRatio||1;
+W0=cv0.clientWidth;H0=cv0.clientHeight;cv0.width=W0*d;cv0.height=H0*d;cx0.setTransform(d,0,0,d,0,0);
+W=cv.clientWidth;Hh=cv.clientHeight;cv.width=W*d;cv.height=Hh*d;ctx.setTransform(d,0,0,d,0,0)}
+addEventListener('resize',sizeAll);
+function frame(now){if(playing)t+=(now-last)/1000;last=now;drawWave();drawBohr(now);requestAnimationFrame(frame)}
+sizeAll();update(null);calc1();calc2();build(3);requestAnimationFrame(frame);
+</script>
+</body>
+</html>
